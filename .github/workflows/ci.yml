@@ -1,0 +1,124 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main*
+
+jobs:
+  install_dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      # Allow you to have access to the code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Install node
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Save the node_modules files
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-
+
+  run_build:
+    runs-on: ubuntu-latest
+    needs: install_dependencies
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      # Restore the node_modules files
+      - name: Restore node_modules cache
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-
+
+      - name: Set environment variables dynamically
+        run: |
+          echo "export const environment = { production: true, apiUrl: '${{ secrets.API_URL }}', cognito: { userPoolId: '${{ secrets.USER_POOL_ID }}', userPoolClientId: '${{ secrets.USER_POOL_CLIENT_ID }}' } };" > src/environments/environment.development.ts
+
+      - name: Run build
+        run: npm run build
+
+      # Save the Dist files
+      - name: Cache dist
+        uses: actions/cache@v2
+        with:
+          path: dist
+          key: ${{ runner.os }}-dist-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-dist-
+
+  deploy:
+    runs-on: ubuntu-latest
+    environment: development
+    needs: run_build
+    if: startsWith(github.ref, 'refs/heads/main')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+      # Allow me to set my AWS credentials
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Restore node_modules cache
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-
+
+      # Restore the dist files
+      - name: Restore dist cache
+        uses: actions/cache@v2
+        with:
+          path: dist
+          key: ${{ runner.os }}-dist-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-dist-
+
+      - name: Clear S3 bucket
+        run: |
+          aws s3 rm s3://angular-19-project --recursive
+
+      - name: Deploy to S3
+        run: |
+          aws s3 sync ./dist/angular-19-project/browser s3://angular-19-project --delete \
+          --cache-control "no-cache, no-store, must-revalidate"
+
+      - name: Make files public
+        run: |
+          aws s3 cp s3://angular-19-project s3://angular-19-project --recursive --acl public-read
+      
+      - name: Delete cache
+        run: rm -rf dist
