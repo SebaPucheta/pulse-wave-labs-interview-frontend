@@ -53,6 +53,9 @@ jobs:
             restore-keys: |
               ${{ runner.os }}-node_modules-
 
+        - name: Install Cypress binary
+          run: npx cypress install
+
         - name: Set environment variables dynamically
           run: USERNAME=${{ secrets.USERNAME }} PASSWORD=${{ secrets.PASSWORD }}
 
