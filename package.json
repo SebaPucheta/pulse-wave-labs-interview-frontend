@@ -6,7 +6,7 @@
   "scripts": {
     "start": "vite",
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --debug",
     "lint": "eslint .",
     "preview": "vite preview",
     "tailwind:init": "npx tailwindcss init"

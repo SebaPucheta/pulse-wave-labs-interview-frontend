@@ -60,7 +60,8 @@ jobs:
           echo "VITE_APP_COGNITO_CLIENT_ID=${{ secrets.VITE_APP_COGNITO_CLIENT_ID }}" >> .env.development
 
       - name: Run build
-        run: npm run build
+        run: |
+          CI=true NODE_ENV=development timeout 600s npm run build
 
       # Save the Dist files
       - name: Cache dist
