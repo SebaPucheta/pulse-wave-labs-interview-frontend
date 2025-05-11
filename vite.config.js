@@ -8,9 +8,15 @@ export default defineConfig({
   define: {
     global: 'window',
   },
+  build: {
+    minify: false,
+  },
   server: {
     hmr: {
-      overlay: false, // Disable the error overlay in development
+      overlay: false,
     },
+  },
+  optimizeDeps: {
+    disabled: true
   },
 });
