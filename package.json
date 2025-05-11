@@ -10,8 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "tailwind:init": "npx tailwindcss init",
-    "cypress:open": "npx cypress open",
-    "cypress:run": "cypress run",
+    "cypress:open": "USERNAME=seba.pucheta.17+24@gmail.com PASSWORD=Seba.123321 npx cypress open",
+    "cypress:run": "USERNAME=seba.pucheta.17+24@gmail.com PASSWORD=Seba.123321 cypress run",
     "cypress:ci": "start-server-and-test dev http://localhost:5173 cypress:run"
   },
   "dependencies": {
