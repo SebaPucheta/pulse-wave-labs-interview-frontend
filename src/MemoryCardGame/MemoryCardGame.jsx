@@ -50,8 +50,11 @@ const shuffleArray = (array) => {
 };
 const saveGameData = async (gameData) => {
   try {
-    const response = await axios.post("http://localhost:3000/api/memory/save", gameData, {
-      headers: { "Content-Type": "application/json" },
+    const response = await axios.post(`${import.meta.env.VITE_APP_API_URL}/game-data`, gameData, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem('token')}`
+      },
     });
 
     console.log("Game data saved successfully", response.data);
@@ -280,7 +283,7 @@ const MemoryCardGame = () => {
 
   const handleSaveNewGame = () => {
     saveGameData({
-        userID,
+        userEmail,
         gameDate: new Date(),
         failed: failedAttempts,
         difficulty: defaultDifficulty,
@@ -388,7 +391,7 @@ const MemoryCardGame = () => {
         const saveData = async () => {
             try {
                 await saveGameData({
-                    userID,
+                    userEmail,
                     gameDate: new Date(),
                     failed: failedAttempts,
                     difficulty: defaultDifficulty,
@@ -407,9 +410,9 @@ const MemoryCardGame = () => {
 }, [matchedCards, cards.length, navigate, sfxVolume, failedAttempts, timer]);
 
 
-  const userID = localStorage.getItem("userID"); // ✅ Fetch from local storage or auth context
-  if (!userID) {
-    console.error("Error: userID is missing.");
+  const userEmail = localStorage.getItem("userEmail"); // ✅ Fetch from local storage or auth context
+  if (!userEmail) {
+    console.error("Error: userEmail is missing.");
     return;
   }
 

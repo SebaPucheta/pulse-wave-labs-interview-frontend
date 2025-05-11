@@ -176,9 +176,9 @@ const Play = () => {
 
   const handlePlay = () => {
     playClickSound();
-    const userID = localStorage.getItem("userID");
-    if (!userID) {
-      alert("UserID is missing. Please log in again.");
+    const userEmail = localStorage.getItem("userEmail");
+    if (!userEmail) {
+      alert("UserEmail is missing. Please log in again.");
       return;
     }
     localStorage.setItem("gameStarted", "true");

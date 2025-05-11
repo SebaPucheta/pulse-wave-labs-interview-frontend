@@ -25,7 +25,7 @@ jobs:
 
       # Save the node_modules files
       - name: Cache node_modules
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
@@ -46,7 +46,7 @@ jobs:
 
       # Restore the node_modules files
       - name: Restore node_modules cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
@@ -55,14 +55,16 @@ jobs:
 
       - name: Set environment variables dynamically
         run: |
-          echo "export const environment = { production: true, apiUrl: '${{ secrets.API_URL }}', cognito: { userPoolId: '${{ secrets.USER_POOL_ID }}', userPoolClientId: '${{ secrets.USER_POOL_CLIENT_ID }}' } };" > src/environments/environment.development.ts
+          echo "VITE_APP_API_URL=${{ secrets.VITE_APP_API_URL }}" >> .env.development
+          echo "VITE_APP_COGNITO_USER_POOL_ID=${{ secrets.VITE_APP_COGNITO_USER_POOL_ID }}" >> .env.development
+          echo "VITE_APP_COGNITO_CLIENT_ID=${{ secrets.VITE_APP_COGNITO_CLIENT_ID }}" >> .env.development
 
       - name: Run build
         run: npm run build
 
       # Save the Dist files
       - name: Cache dist
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: dist
           key: ${{ runner.os }}-dist-${{ hashFiles('**/package-lock.json') }}
@@ -91,7 +93,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Restore node_modules cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
@@ -100,7 +102,7 @@ jobs:
 
       # Restore the dist files
       - name: Restore dist cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: dist
           key: ${{ runner.os }}-dist-${{ hashFiles('**/package-lock.json') }}

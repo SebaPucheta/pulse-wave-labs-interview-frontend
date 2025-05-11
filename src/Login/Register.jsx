@@ -1,19 +1,26 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
 import styles from './Register.module.css';
+import { registerUser } from '../utils/cognito';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
-  const [formData, setFormData] = useState({ username: '', password: '' });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/api/users/register', formData);
-      setMessage(response.data.message);
+      await registerUser(formData.email, formData.password);
+      alert("Your registration was succesfully, please login");
+      navigate('/login');
     } catch (error) {
-      setMessage(error.response?.data.message || 'Error registering');
+      setMessage(error.message || 'Error registering');
     }
+  };
+
+  const handleLoginRedirect = () => {
+    navigate('/login');
   };
 
   return (
@@ -22,9 +29,9 @@ const Register = () => {
         <h2>Register</h2>
         <input
           type="text"
-          placeholder="Username"
-          value={formData.username}
-          onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+          placeholder="Email"
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           className={styles.input}
         />
         <input
@@ -34,9 +41,14 @@ const Register = () => {
           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
           className={styles.input}
         />
-        <button type="submit" className={styles.button}>
-          Register
-        </button>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <button type="submit" className={`${styles.button} ${styles.registerButton}`}>
+            Register
+          </button>
+          <button type="button" onClick={handleLoginRedirect} className={`${styles.button} ${styles.loginButton}`}>
+            Login
+          </button>
+        </div>
         {message && <p className={styles.message}>{message}</p>}
       </form>
     </div>
