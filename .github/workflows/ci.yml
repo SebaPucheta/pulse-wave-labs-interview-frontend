@@ -55,9 +55,9 @@ jobs:
 
       - name: Set environment variables dynamically
         run: |
-          echo "VITE_APP_API_URL=${{ secrets.VITE_APP_API_URL }}" >> .env.development
-          echo "VITE_APP_COGNITO_USER_POOL_ID=${{ secrets.VITE_APP_COGNITO_USER_POOL_ID }}" >> .env.development
-          echo "VITE_APP_COGNITO_CLIENT_ID=${{ secrets.VITE_APP_COGNITO_CLIENT_ID }}" >> .env.development
+          echo "VITE_APP_API_URL=${{ secrets.VITE_APP_API_URL }}" >> .env
+          echo "VITE_APP_COGNITO_USER_POOL_ID=${{ secrets.VITE_APP_COGNITO_USER_POOL_ID }}" >> .env
+          echo "VITE_APP_COGNITO_CLIENT_ID=${{ secrets.VITE_APP_COGNITO_CLIENT_ID }}" >> .env
 
       - name: Run build
         run: |

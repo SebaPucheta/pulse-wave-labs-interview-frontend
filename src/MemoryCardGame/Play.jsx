@@ -227,13 +227,10 @@ const Play = () => {
         </button>
         <button
           className={`game-button ${isCalmMode ? "calm-button" : ""}`}
-          onClick={() => {
-            playClickSound();
-            alert("Instructions coming soon!");
-          }}
+          onClick={() => navigate('/records')}
           onMouseEnter={playHoverSound}
         >
-          Instructions
+          Records
         </button>
         <button
           className={`game-button ${isCalmMode ? "calm-button" : ""}`}

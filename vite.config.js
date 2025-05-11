@@ -16,7 +16,4 @@ export default defineConfig({
       overlay: false,
     },
   },
-  optimizeDeps: {
-    disabled: true
-  },
 });

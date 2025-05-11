@@ -10,7 +10,7 @@ import MemoryCardGame from './MemoryCardGame/MemoryCardGame';
 import Congratulations from "./MemoryCardGame/Congratulation";
 import CongtEasy from "./MemoryCardGame/Congratseasy";
 import CongtNormal from "./MemoryCardGame/Congratsnormal";
-
+import UserRecords from './MemoryCardGame/UserRecords';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
@@ -53,6 +53,10 @@ const App = () => {
         <Route
           path="/memory-card-game"
           element={isAuthenticated ? <MemoryCardGame /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/records"
+          element={isAuthenticated ? <UserRecords /> : <Navigate to="/login" />}
         />
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
