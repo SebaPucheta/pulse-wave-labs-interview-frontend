@@ -47,6 +47,7 @@ const Login = ({ onLogin }) => {
       <form onSubmit={handleSubmit}>
         <h2>Login</h2>
         <input
+          data-testid="Login-input-email"
           type="text"
           placeholder="Email"
           value={formData.email}
@@ -54,6 +55,7 @@ const Login = ({ onLogin }) => {
           className={styles.input}
         />
         <input
+          data-testid="Login-input-password"
           type="password"
           placeholder="Password"
           value={formData.password}
@@ -61,7 +63,10 @@ const Login = ({ onLogin }) => {
           className={styles.input}
         />
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <button type="submit" className={`${styles.button} ${styles.loginButton}`}>
+          <button
+            data-testid="Login-btn-login"
+            type="submit"
+            className={`${styles.button} ${styles.loginButton}`}>
             Login
           </button>
           <button type="button" onClick={handleRegisterRedirect} className={`${styles.button} ${styles.registerButton}`}>

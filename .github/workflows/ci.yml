@@ -32,6 +32,33 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node_modules-
 
+  run_tests:
+    runs-on: ubuntu-latest
+    needs: install_dependencies
+    steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
+
+        - name: Set up Node.js
+          uses: actions/setup-node@v2
+          with:
+            node-version: '20'
+
+        # Restore the node_modules files
+        - name: Restore node_modules cache
+          uses: actions/cache@v4
+          with:
+            path: node_modules
+            key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
+            restore-keys: |
+              ${{ runner.os }}-node_modules-
+
+        - name: Set environment variables dynamically
+          run: USERNAME=${{ secrets.USERNAME }} PASSWORD=${{ secrets.PASSWORD }}
+
+        - name: Run build
+          run: npm run cypress:ci
+
   run_build:
     runs-on: ubuntu-latest
     needs: install_dependencies

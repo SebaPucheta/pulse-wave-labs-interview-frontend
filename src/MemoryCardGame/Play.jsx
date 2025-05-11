@@ -226,6 +226,7 @@ const Play = () => {
           Play
         </button>
         <button
+          data-testid="Play-btn-records"
           className={`game-button ${isCalmMode ? "calm-button" : ""}`}
           onClick={() => navigate('/records')}
           onMouseEnter={playHoverSound}
